@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>文学常识记忆 · 云端版</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --primary:#667eea;--primary-dark:#764ba2;--bg:#f0f2f5;--card:#fff;
+  --text:#222;--text-light:#888;--border:#eee;
+  --forget:#ff6b6b;--hard:#ffa726;--good:#26c6da;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center}
+.app{width:100%;max-width:480px;min-height:100vh;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,.06)}
+.page{display:none;padding:20px 20px 90px;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:16px 20px;border-radius:0 0 20px 20px;margin:-20px -20px 20px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:18px;font-weight:600}
+.topbar .user-info{font-size:12px;opacity:.85}
+.login-page{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:40px 30px;background:linear-gradient(135deg,var(--primary),var(--primary-dark))}
+.login-card{background:#fff;border-radius:24px;padding:36px 28px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.login-card h2{text-align:center;font-size:24px;margin-bottom:8px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-card .sub{text-align:center;color:var(--text-light);font-size:13px;margin-bottom:28px}
+.input-group{margin-bottom:16px}
+.input-group label{display:block;font-size:13px;color:#555;margin-bottom:6px;font-weight:500}
+.input-group input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;transition:border-color .2s;outline:none}
+.input-group input:focus{border-color:var(--primary)}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;color:#fff}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 4px 16px rgba(102,126,234,.35)}
+.btn-outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary);margin-top:10px}
+.group-select{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.group-btn{flex:1;min-width:60px;padding:12px 8px;border:2px solid #e0e0e0;border-radius:10px;background:#fff;cursor:pointer;font-size:14px;transition:all .2s}
+.group-btn:hover{border-color:var(--primary)}
+.group-btn.active{border-color:var(--primary);background:var(--primary);color:#fff}
+.group-btn .num{font-size:20px;font-weight:bold;display:block}
+.group-btn .label{font-size:11px;opacity:.8}
+.login-divider{text-align:center;color:#ccc;font-size:12px;margin:20px 0;position:relative}
+.login-divider::before,.login-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:#eee}
+.login-divider::before{left:0}.login-divider::after{right:0}
+.mode-badge{display:inline-block;background:#f0f2ff;color:var(--primary);font-size:11px;padding:3px 10px;border-radius:20px;margin-top:12px}
+.hero-card{background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:20px;padding:32px 24px;color:#fff;text-align:center;box-shadow:0 8px 24px rgba(102,126,234,.3);margin-bottom:20px}
+.hero-card .date{font-size:13px;opacity:.85;margin-bottom:8px}
+.hero-card .num{font-size:52px;font-weight:700;line-height:1.1}
+.hero-card .label{font-size:14px;opacity:.9;margin-top:4px}
+.hero-card .streak{margin-top:14px;font-size:12px;opacity:.8;background:rgba(255,255,255,.15);display:inline-block;padding:4px 14px;border-radius:20px}
+.stats-row{display:flex;gap:10px;margin-bottom:20px}
+.stat-box{flex:1;background:var(--card);border-radius:14px;padding:16px 8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.stat-box .num{font-size:22px;font-weight:700;color:var(--text)}
+.stat-box .label{font-size:11px;color:var(--text-light);margin-top:4px}
+.section-title{font-size:15px;font-weight:600;margin:20px 0 12px;padding-left:4px;display:flex;align-items:center;justify-content:space-between}
+.section-title .more{font-size:12px;color:var(--primary);font-weight:400;cursor:pointer}
+.card-list{display:flex;flex-direction:column;gap:10px}
+.card-item{background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:space-between}
+.card-item .q{font-size:14px;font-weight:500;flex:1;margin-right:10px;line-height:1.4}
+.card-item .a{font-size:13px;color:var(--primary);font-weight:600;white-space:nowrap}
+.card-item .tags{margin-top:6px}
+.tag{display:inline-block;background:#f0f2ff;color:var(--primary);font-size:10px;padding:2px 8px;border-radius:10px;margin-right:4px}
+.study-header{display:flex;align-items:center;justify-content:space-between;padding:8px 0 16px}
+.back-btn{background:none;border:none;font-size:22px;color:#666;cursor:pointer;padding:4px 8px}
+.progress-text{font-size:14px;color:#666;font-weight:500}
+.progress-bar{height:6px;background:#e8e8e8;border-radius:3px;overflow:hidden;margin-bottom:20px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-dark));border-radius:3px;transition:width .3s ease}
+.flashcard{background:var(--card);border-radius:20px;padding:32px 24px;min-height:320px;display:flex;flex-direction:column;box-shadow:0 4px 20px rgba(0,0,0,.06);position:relative}
+.flashcard .card-tag{display:inline-block;background:#f0f2ff;color:var(--primary);font-size:11px;padding:4px 12px;border-radius:20px;align-self:flex-start;margin-bottom:16px;font-weight:500}
+.flashcard .question{font-size:20px;font-weight:600;line-height:1.6;flex:1;display:flex;align-items:center}
+.flashcard .answer-area{margin-top:16px;padding-top:16px;border-top:1px dashed #e0e0e0;animation:fadeIn .3s ease}
+.flashcard .answer{font-size:18px;font-weight:700;color:var(--primary);margin-bottom:8px}
+.flashcard .hint{font-size:13px;color:var(--text-light);line-height:1.7}
+.show-answer-btn{width:100%;padding:14px;background:#f5f5f7;color:#555;border:none;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;margin-top:auto}
+.show-answer-btn:active{background:#ebebef}
+.rate-row{display:flex;gap:8px;margin-top:16px;animation:fadeIn .3s ease}
+.rate-btn{flex:1;padding:14px 6px;border:none;border-radius:12px;font-size:14px;font-weight:600;color:#fff;cursor:pointer;transition:transform .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.rate-btn:active{transform:scale(.95)}
+.rate-btn .interval{font-size:10px;font-weight:400;opacity:.85}
+.rate-forget{background:linear-gradient(135deg,var(--forget),#ee5a5a)}
+.rate-hard{background:linear-gradient(135deg,var(--hard),#fb8c00)}
+.rate-good{background:linear-gradient(135deg,var(--good),#00acc1)}
+.finish-page{text-align:center;padding-top:80px}
+.finish-icon{font-size:72px;margin-bottom:20px}
+.finish-title{font-size:24px;font-weight:700;margin-bottom:8px}
+.finish-sub{font-size:14px;color:var(--text-light);margin-bottom:32px;line-height:1.6}
+.finish-stats{display:flex;justify-content:center;gap:40px;margin-bottom:40px}
+.finish-stat .num{font-size:28px;font-weight:700;color:var(--primary)}
+.finish-stat .label{font-size:12px;color:var(--text-light);margin-top:4px}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:64px;background:#fff;display:flex;border-top:1px solid #eee;z-index:100}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#999;font-size:10px;gap:2px;transition:color .2s}
+.tab-item.active{color:var(--primary)}
+.tab-item .icon{font-size:22px}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:20px;padding:24px;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal h3{font-size:18px;margin-bottom:16px}
+.modal .input-group{margin-bottom:12px}
+.modal textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;resize:vertical;min-height:60px;font-family:inherit;outline:none}
+.modal textarea:focus{border-color:var(--primary)}
+.modal-actions{display:flex;gap:10px;margin-top:16px}
+.modal-actions .btn{flex:1;padding:12px;font-size:14px}
+.btn-cancel{background:#f0f0f0;color:#666}
+.import-area{background:#f8f9fa;border:2px dashed #ddd;border-radius:12px;padding:24px;text-align:center;margin-bottom:16px}
+.import-area textarea{width:100%;border:none;background:transparent;resize:vertical;min-height:100px;font-size:13px;outline:none;font-family:inherit;line-height:1.8}
+.import-hint{font-size:11px;color:var(--text-light);margin-top:8px;line-height:1.6}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;z-index:300;opacity:0;transition:opacity .25s;pointer-events:none;max-width:80%;text-align:center}
+.toast.show{opacity:1}
+.empty{text-align:center;padding:60px 20px;color:var(--text-light)}
+.empty .icon{font-size:48px;margin-bottom:12px}
+.empty .text{font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- 登录页 -->
+  <div id="page-login" class="page active" style="padding:0">
+    <div class="login-page">
+      <div class="login-card">
+        <h2>文学常识记忆</h2>
+        <p class="sub">间隔重复 · 语境记忆 · 云端同步</p>
+        <div class="input-group">
+          <label>邮箱</label>
+          <input type="email" id="login-email" placeholder="请输入邮箱">
+        </div>
+        <div class="input-group">
+          <label>密码</label>
+          <input type="password" id="login-pwd" placeholder="请输入密码（至少6位）">
+        </div>
+        <button class="btn btn-primary" onclick="handleLogin()">登录 / 注册</button>
+        <div class="login-divider">或</div>
+        <button class="btn btn-outline" onclick="useLocalMode()">本地体验模式（无需注册）</button>
+        <div style="text-align:center">
+          <span class="mode-badge" id="mode-badge">当前：云端模式</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 首页 -->
+  <div id="page-home" class="page">
+    <div class="topbar">
+      <h1>文学记忆</h1>
+      <div class="user-info" id="user-display">本地用户</div>
+    </div>
+    <div class="hero-card">
+      <div class="date" id="today-date">--</div>
+      <div class="num" id="today-count">0</div>
+      <div class="label">今日待复习</div>
+      <div class="streak" id="streak-info">已连续学习 0 天</div>
+    </div>
+    <button class="btn btn-primary" id="btn-start" onclick="startStudy()">开始今日背诵</button>
+    <button class="btn btn-outline" onclick="showCustomStudyModal()">🎯 自定义刷题（按组学习）</button>
+    <div class="stats-row">
+      <div class="stat-box"><div class="num" id="stat-total">0</div><div class="label">题库总数</div></div>
+      <div class="stat-box"><div class="num" id="stat-mastered">0</div><div class="label">已掌握</div></div>
+      <div class="stat-box"><div class="num" id="stat-learning">0</div><div class="label">学习中</div></div>
+    </div>
+    <div class="section-title">最近添加 <span class="more" onclick="switchTab('library')">全部题库 →</span></div>
+    <div class="card-list" id="recent-cards"></div>
+  </div>
+
+  <!-- 刷题页 -->
+  <div id="page-study" class="page">
+    <div class="study-header">
+      <button class="back-btn" onclick="goHome()">←</button>
+      <div class="progress-text" id="progress-text">0 / 0</div>
+      <div style="width:28px"></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="flashcard" id="flashcard">
+      <span class="card-tag" id="card-tag">文学常识</span>
+      <div class="question" id="card-question">加载中...</div>
+      <div id="answer-area" style="display:none">
+        <div class="answer-area">
+          <div class="answer" id="card-answer"></div>
+          <div class="hint" id="card-hint"></div>
+        </div>
+      </div>
+      <button class="show-answer-btn" id="btn-show-answer" onclick="showAnswer()">显示答案</button>
+    </div>
+    <div class="rate-row" id="rate-row" style="display:none">
+      <button class="rate-btn rate-forget" onclick="rateCard('forget')">
+        <span>忘记</span><span class="interval" id="interval-forget">今日重刷</span>
+      </button>
+      <button class="rate-btn rate-hard" onclick="rateCard('hard')">
+        <span>模糊</span><span class="interval">3天后</span>
+      </button>
+      <button class="rate-btn rate-good" onclick="rateCard('good')">
+        <span>掌握</span><span class="interval" id="interval-good">7天后</span>
+      </button>
+      <button class="rate-btn" style="background:linear-gradient(135deg,#ffd700,#ffb300);color:#333" onclick="markAsMastered()">
+        <span>⭐ 熟记</span><span class="interval">不再出现</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 完成页 -->
+  <div id="page-finish" class="page">
+    <div class="finish-page">
+      <div class="finish-icon">🎉</div>
+      <div class="finish-title">今日背诵完成！</div>
+      <div class="finish-sub">所有待复习卡片已处理完毕<br>坚持间隔重复，记忆更牢固</div>
+      <div class="finish-stats">
+        <div class="finish-stat"><div class="num" id="finish-reviewed">0</div><div class="label">本次复习</div></div>
+        <div class="finish-stat"><div class="num" id="finish-mastered">0</div><div class="label">标记掌握</div></div>
+      </div>
+      <button class="btn btn-primary" onclick="goHome()">返回首页</button>
+    </div>
+  </div>
+
+  <!-- 题库管理页 -->
+  <div id="page-library" class="page">
+    <div class="topbar">
+      <h1>题库管理</h1>
+      <div style="display:flex;gap:8px">
+        <button onclick="showAddModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:8px;font-size:13px;cursor:pointer">+ 添加</button>
+        <button onclick="showImportModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:8px;font-size:13px;cursor:pointer">批量导入</button>
+      </div>
+    </div>
+    <div class="section-title">全部卡片（<span id="library-count">0</span>）</div>
+    <div class="card-list" id="library-list"></div>
+  </div>
+
+  <!-- 统计页 -->
+  <div id="page-stats" class="page">
+    <div class="topbar"><h1>学习统计</h1><div></div></div>
+    <div class="hero-card" style="padding:24px">
+      <div class="num" id="stats-total-reviews">0</div>
+      <div class="label">累计复习次数</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="num" id="stats-accuracy">0%</div><div class="label">掌握率</div></div>
+      <div class="stat-box"><div class="num" id="stats-streak">0</div><div class="label">连续天数</div></div>
+      <div class="stat-box"><div class="num" id="stats-due">0</div><div class="label">待复习</div></div>
+    </div>
+    <div class="section-title">掌握进度</div>
+    <div class="card-list" id="mastery-list"></div>
+  </div>
+
+  <!-- 底部导航 -->
+  <div class="tabbar" id="tabbar" style="display:none">
+    <div class="tab-item active" data-tab="home" onclick="switchTab('home')"><div class="icon">🏠</div><div>首页</div></div>
+    <div class="tab-item" data-tab="study" onclick="switchTab('study')"><div class="icon">📖</div><div>背诵</div></div>
+    <div class="tab-item" data-tab="library" onclick="switchTab('library')"><div class="icon">📚</div><div>题库</div></div>
+    <div class="tab-item" data-tab="stats" onclick="switchTab('stats')"><div class="icon">📊</div><div>统计</div></div>
+  </div>
+</div>
+
+<!-- 添加卡片弹窗 -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <h3>添加文学常识卡片</h3>
+    <div class="input-group"><label>题目</label><textarea id="new-question" placeholder="例如：被称为诗圣的诗人是谁？"></textarea></div>
+    <div class="input-group"><label>答案</label><textarea id="new-answer" placeholder="例如：杜甫"></textarea></div>
+    <div class="input-group"><label>背景提示（可选）</label><textarea id="new-hint" placeholder="例如：唐代现实主义诗人，代表作三吏三别"></textarea></div>
+    <div class="input-group"><label>标签（逗号分隔）</label><input type="text" id="new-tags" placeholder="例如：唐代,诗人,唐诗" style="width:100%;padding:12px 14px;border:1.5px solid #eee;border-radius:10px;font-size:14px;outline:none"></div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal('add-modal')">取消</button>
+      <button class="btn btn-primary" onclick="addCard()">确认添加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批量导入弹窗 -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal">
+    <h3>批量导入题库</h3>
+    <div class="import-area">
+      <textarea id="import-text" placeholder="每行一条，格式：题目|答案|提示|标签1,标签2
+
+例如：
+诗圣是谁？|杜甫|唐代现实主义诗人|唐代,诗人
+《史记》作者？|司马迁|第一部纪传体通史|史学,汉代"></textarea>
+    </div>
+    <div class="import-hint">格式说明：每行一条，用 | 分隔题目、答案、提示、标签<br>标签之间用英文逗号分隔，提示和标签可省略</div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal('import-modal')">取消</button>
+      <button class="btn btn-primary" onclick="importCards()">开始导入</button>
+    </div>
+  </div>
+</div>
+
+<!-- 自定义刷题弹窗 -->
+<div class="modal-overlay" id="custom-study-modal">
+  <div class="modal">
+    <h3>选择今日学习量</h3>
+    <p style="font-size:13px;color:#666;margin:8px 0">每组10题，从题库中随机抽取</p>
+    <div class="group-select" id="group-select">
+      <button class="group-btn active" onclick="selectGroup(1,this)"><span class="num">1</span><span class="label">组 / 10题</span></button>
+      <button class="group-btn" onclick="selectGroup(2,this)"><span class="num">2</span><span class="label">组 / 20题</span></button>
+      <button class="group-btn" onclick="selectGroup(3,this)"><span class="num">3</span><span class="label">组 / 30题</span></button>
+      <button class="group-btn" onclick="selectGroup(5,this)"><span class="num">5</span><span class="label">组 / 50题</span></button>
+    </div>
+    <div style="text-align:center;font-size:13px;color:#666;margin:8px 0">
+      题库总数：<span id="total-cards-count">0</span> 题
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal('custom-study-modal')">取消</button>
+      <button class="btn btn-primary" onclick="startCustomStudy()">开始刷题</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============================================================
+//  Supabase 配置（已填入你的项目信息）
+// ============================================================
+const SUPABASE_URL = "https://dhbdajqqyslhbgtdkhmi.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_SaJAebziQcJEj_iwlusUsA_BeGnzvBg";
+
+const useSupabase = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+let supabaseClient = null;
+let currentUser = null;
+let userKey = 'local_user';
+
+// 初始化Supabase（等待SDK加载完成）
+function initSupabase() {
+  if (useSupabase && window.supabase) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    document.getElementById('mode-badge').textContent = '当前：云端模式';
+    return true;
+  }
+  return false;
+}
+
+// 轮询等待Supabase SDK加载
+function waitForSupabase(callback, maxWait = 5000) {
+  const start = Date.now();
+  const check = () => {
+    if (initSupabase()) {
+      callback();
+    } else if (Date.now() - start < maxWait) {
+      setTimeout(check, 200);
+    } else {
+      // 超时，使用本地模式
+      document.getElementById('mode-badge').textContent = '当前：本地模式（SDK加载超时）';
+      callback();
+    }
+  };
+  check();
+}
+
+// 预置题库
+const DEFAULT_CARDS = [
+  {id:'c1', question:'被称为"诗圣"的唐代诗人是谁？', answer:'杜甫', hint:'字子美，自号少陵野老，唐代伟大的现实主义诗人，与李白合称"李杜"。代表作有《登高》《春望》《三吏》《三别》等。', tags:['唐代文学','诗人']},
+  {id:'c2', question:'被称为"诗仙"的诗人是谁？', answer:'李白', hint:'字太白，号青莲居士，唐代伟大的浪漫主义诗人，被后人誉为"诗仙"。代表作有《望庐山瀑布》《将进酒》《蜀道难》等。', tags:['唐代文学','诗人']},
+  {id:'c3', question:'"唐宋八大家"中，唐代的两位文学家是谁？', answer:'韩愈、柳宗元', hint:'唐宋八大家包括唐代韩愈、柳宗元，宋代欧阳修、苏洵、苏轼、苏辙、王安石、曾巩。韩愈被尊为"唐宋八大家"之首。', tags:['唐代文学','散文']},
+  {id:'c4', question:'《红楼梦》的作者是谁？', answer:'曹雪芹', hint:'清代小说家，名霑，字梦阮，号雪芹。《红楼梦》又名《石头记》，是中国古典四大名著之首，前80回为曹雪芹所著。', tags:['明清文学','小说']},
+  {id:'c5', question:'"元曲四大家"指的是哪四位？', answer:'关汉卿、白朴、马致远、郑光祖', hint:'关汉卿代表作《窦娥冤》，白朴代表作《墙头马上》，马致远代表作《汉宫秋》，郑光祖代表作《倩女离魂》。', tags:['元代文学','戏曲']},
+  {id:'c6', question:'中国第一部诗歌总集是什么？', answer:'《诗经》', hint:'《诗经》是中国古代诗歌开端，收集了西周初年至春秋中叶的诗歌305篇，又称"诗三百"。内容分为风、雅、颂三部分。', tags:['先秦文学','诗歌']},
+  {id:'c7', question:'鲁迅的第一篇白话短篇小说是什么？', answer:'《狂人日记》', hint:'1918年发表于《新青年》，是中国第一部现代白话小说，通过"狂人"的视角揭露封建礼教"吃人"的本质。', tags:['现代文学','小说']},
+  {id:'c8', question:'《史记》的作者是谁？它属于什么体例？', answer:'司马迁；纪传体通史', hint:'《史记》是中国历史上第一部纪传体通史，记载了从上古传说中的黄帝时代到汉武帝太初四年间共3000多年的历史，被鲁迅誉为"史家之绝唱，无韵之离骚"。', tags:['两汉文学','史学']},
+  {id:'c9', question:'"初唐四杰"指的是哪四位诗人？', answer:'王勃、杨炯、卢照邻、骆宾王', hint:'简称"王杨卢骆"。王勃代表作《滕王阁序》，骆宾王代表作《咏鹅》《讨武曌檄》。他们扭转了唐朝以前萎靡浮华的宫廷诗歌风气。', tags:['唐代文学','诗人']},
+  {id:'c10', question:'莎士比亚的四大悲剧是哪四部？', answer:'《哈姆雷特》《奥赛罗》《李尔王》《麦克白》', hint:'莎士比亚是英国文艺复兴时期最伟大的剧作家、诗人。四大悲剧代表了他戏剧创作的巅峰，主题多围绕人性的弱点与命运的冲突。', tags:['外国文学','戏剧']},
+  {id:'c11', question:'中国四大名著是哪四部？', answer:'《三国演义》《水浒传》《西游记》《红楼梦》', hint:'《三国演义》作者罗贯中（元末明初），《水浒传》作者施耐庵，《西游记》作者吴承恩（明代），《红楼梦》作者曹雪芹（清代）。', tags:['明清文学','小说']},
+  {id:'c12', question:'"竹林七贤"指的是哪七位？', answer:'嵇康、阮籍、山涛、向秀、刘伶、王戎、阮咸', hint:'魏晋时期七位名士，因常在当时的山阳县竹林之下喝酒、纵歌，肆意酣畅，世谓"竹林七贤"。他们是魏晋玄学的代表人物。', tags:['魏晋文学','作家']},
+];
+
+// 本地存储数据初始化
+function initLocalData() {
+  if (!localStorage.getItem('lit_cards')) {
+    localStorage.setItem('lit_cards', JSON.stringify(DEFAULT_CARDS));
+  }
+  if (!localStorage.getItem('lit_records')) {
+    const today = getLocalDayStr();
+    const records = DEFAULT_CARDS.map(c => ({
+      id: 'r_' + c.id,
+      cardId: c.id,
+      repetition: 0,
+      isNeedRetryToday: false,
+      nextReviewDate: today,
+      lastReviewDate: null,
+      totalReviews: 0,
+      mastered: false
+    }));
+    localStorage.setItem('lit_records', JSON.stringify(records));
+  }
+  if (!localStorage.getItem('lit_stats')) {
+    localStorage.setItem('lit_stats', JSON.stringify({streakDays:0, lastStudyDate:null, totalReviews:0}));
+  }
+}
+
+// 通用工具函数
+function getLocalDayStr(d) {
+  d = d || new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function addDaysStr(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return getLocalDayStr(d);
+}
+function formatDateCN(dateStr) {
+  const d = new Date(dateStr);
+  const wd = ['周日','周一','周二','周三','周四','周五','周六'];
+  return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 '+wd[d.getDay()];
+}
+function genId() {
+  return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+}
+
+// 数据访问层（统一接口，内部自动切换模式）
+const DB = {
+  async getCards() {
+    if (useSupabase && supabaseClient) {
+      let query = supabaseClient.from('literature_card').select('*');
+      if (currentUser) {
+        // 登录用户：公共题目（user_id为全0UUID）+ 自己的题目
+        query = query.or(`user_id.eq.00000000-0000-0000-0000-000000000000,user_id.eq.${currentUser.id}`);
+      } else {
+        // 未登录：只看公共题目
+        query = query.eq('user_id', '00000000-0000-0000-0000-000000000000');
+      }
+      const {data} = await query;
+      return data || [];
+    }
+    return JSON.parse(localStorage.getItem('lit_cards') || '[]');
+  },
+  async addCard(card) {
+    if (useSupabase && supabaseClient) {
+      const {data} = await supabaseClient.from('literature_card').insert({
+        question:card.question, answer:card.answer, hint:card.hint, tags:card.tags
+      }).select();
+      if (currentUser) {
+        await supabaseClient.from('user_review').insert({
+          user_id:currentUser.id, card_id:data[0].id,
+          repetition:0, is_need_retry_today:false, next_review_date:getLocalDayStr()
+        });
+      }
+      return data[0];
+    }
+    const cards = JSON.parse(localStorage.getItem('lit_cards'));
+    const newCard = {...card, id:genId()};
+    cards.push(newCard);
+    localStorage.setItem('lit_cards', JSON.stringify(cards));
+    const records = JSON.parse(localStorage.getItem('lit_records'));
+    records.push({
+      id:'r_'+newCard.id, cardId:newCard.id, repetition:0,
+      isNeedRetryToday:false, nextReviewDate:getLocalDayStr(),
+      lastReviewDate:null, totalReviews:0, mastered:false
+    });
+    localStorage.setItem('lit_records', JSON.stringify(records));
+    return newCard;
+  },
+  async getRecords() {
+    if (useSupabase && supabaseClient && currentUser) {
+      const {data} = await supabaseClient.from('user_review')
+        .select('*, card:literature_card(*)')
+        .eq('user_id', currentUser.id);
+      return data || [];
+    }
+    const records = JSON.parse(localStorage.getItem('lit_records') || '[]');
+    const cards = JSON.parse(localStorage.getItem('lit_cards') || '[]');
+    return records.map(r => ({...r, card: cards.find(c => c.id === r.cardId)}));
+  },
+  async updateRecord(recordId, updates) {
+    if (useSupabase && supabaseClient) {
+      await supabaseClient.from('user_review').update(updates).eq('id', recordId);
+      return;
+    }
+    const records = JSON.parse(localStorage.getItem('lit_records'));
+    const idx = records.findIndex(r => r.id === recordId);
+    if (idx !== -1) {
+      records[idx] = {...records[idx], ...updates};
+      localStorage.setItem('lit_records', JSON.stringify(records));
+    }
+  },
+  async getStats() {
+    if (useSupabase) return {streakDays:0, lastStudyDate:null, totalReviews:0};
+    return JSON.parse(localStorage.getItem('lit_stats') || '{}');
+  },
+  async updateStats(updates) {
+    if (useSupabase) return;
+    const stats = JSON.parse(localStorage.getItem('lit_stats'));
+    localStorage.setItem('lit_stats', JSON.stringify({...stats, ...updates}));
+  }
+};
+
+// 增强版 SRS 算法（复刻不背单词当日重刷机制）
+function calcSRS(grade, repetition) {
+  let result = {repetition, isNeedRetryToday:false, nextReviewDate:''};
+  if (grade === 'forget') {
+    result.repetition = 0;
+    result.isNeedRetryToday = true;
+    result.nextReviewDate = addDaysStr(1);
+  } else if (grade === 'hard') {
+    result.repetition = 0;
+    result.isNeedRetryToday = false;
+    result.nextReviewDate = addDaysStr(3);
+  } else if (grade === 'good') {
+    result.repetition = repetition + 1;
+    result.isNeedRetryToday = false;
+    let day = 7;
+    if (result.repetition >= 2) day = 14;
+    if (result.repetition >= 4) day = 30;
+    result.nextReviewDate = addDaysStr(day);
+  }
+  return result;
+}
+
+// 全局状态
+let todayQueue = [];
+let currentIndex = 0;
+let sessionReviewed = 0;
+let sessionMastered = 0;
+let toastTimer = null;
+
+// 页面切换
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  const tabMap = {home:'home', study:'study', finish:'home', library:'library', stats:'stats'};
+  const activeTab = tabMap[name];
+  if (activeTab) {
+    document.querySelector(`.tab-item[data-tab="${activeTab}"]`)?.classList.add('active');
+  }
+}
+
+function switchTab(tab) {
+  if (tab === 'home') { renderHome(); switchPage('home'); }
+  else if (tab === 'study') { startStudy(); }
+  else if (tab === 'library') { renderLibrary(); switchPage('library'); }
+  else if (tab === 'stats') { renderStats(); switchPage('stats'); }
+}
+
+// 登录 / 本地模式
+async function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pwd = document.getElementById('login-pwd').value;
+  if (!email || !pwd) { showToast('请输入邮箱和密码'); return; }
+  if (!useSupabase || !supabaseClient) { showToast('Supabase未就绪，使用本地模式'); useLocalMode(); return; }
+  
+  showToast('正在登录...');
+  
+  // 先尝试登录
+  let {data, error} = await supabaseClient.auth.signInWithPassword({email, password:pwd});
+  
+  if (!error && data.session) {
+    // 登录成功
+    currentUser = data.session.user;
+    userKey = currentUser.id;
+    await initSupabaseUser();
+    enterApp();
+    showToast('登录成功');
+    return;
+  }
+  
+  // 登录失败，尝试注册
+  showToast('登录失败，尝试注册...');
+  ({data, error} = await supabaseClient.auth.signUp({email, password:pwd}));
+  
+  if (error) {
+    showToast('注册失败：' + error.message);
+    return;
+  }
+  
+  if (data.session) {
+    // 注册成功且自动登录（无需邮箱验证）
+    currentUser = data.session.user;
+    userKey = currentUser.id;
+    await initSupabaseUser();
+    enterApp();
+    showToast('注册成功，已登录');
+  } else {
+    // 注册成功但需要邮箱验证
+    showToast('注册成功！请先去邮箱验证，验证后再登录');
+  }
+}
+
+function useLocalMode() {
+  currentUser = {id:'local_user', email:'local@demo.com'};
+  userKey = 'local_user';
+  initLocalData();
+  enterApp();
+}
+
+async function initSupabaseUser() {
+  // 查询所有可见卡片（公共题 + 自己的题）
+  const {data:cards} = await supabaseClient.from('literature_card').select('id');
+  if (!cards || cards.length === 0) return;
+  
+  // 查询用户已有的复习记录
+  const {data:existingRecords} = await supabaseClient.from('user_review')
+    .select('card_id')
+    .eq('user_id', currentUser.id);
+  const existingCardIds = new Set((existingRecords || []).map(r => r.card_id));
+  
+  // 只给还没有复习记录的卡片创建记录
+  const today = getLocalDayStr();
+  const newRecords = cards
+    .filter(c => !existingCardIds.has(c.id))
+    .map(c => ({
+      user_id: currentUser.id,
+      card_id: c.id,
+      repetition: 0,
+      is_need_retry_today: false,
+      next_review_date: today
+    }));
+  
+  if (newRecords.length > 0) {
+    await supabaseClient.from('user_review').insert(newRecords);
+  }
+}
+
+function enterApp() {
+  document.getElementById('tabbar').style.display = 'flex';
+  document.getElementById('user-display').textContent = currentUser.email?.substring(0,10) || '本地用户';
+  renderHome();
+  switchPage('home');
+}
+
+async function checkAuth() {
+  if (useSupabase && supabaseClient) {
+    const {data:{session}} = await supabaseClient.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      userKey = currentUser.id;
+      await initSupabaseUser();  // 确保所有可见题目都有复习记录
+      enterApp();
+    }
+  }
+}
+
+// 首页渲染
+async function renderHome() {
+  const today = getLocalDayStr();
+  const records = await DB.getRecords();
+  const cards = await DB.getCards();
+  const stats = await DB.getStats();
+  const dueRecords = records.filter(r => (r.nextReviewDate || r.next_review_date) <= today);
+  const masteredCount = records.filter(r => r.mastered || r.repetition >= 4).length;
+  const learningCount = records.filter(r => !r.mastered && r.repetition > 0 && r.repetition < 4).length;
+  document.getElementById('today-date').textContent = formatDateCN(today);
+  document.getElementById('today-count').textContent = dueRecords.length;
+  document.getElementById('streak-info').textContent = `已连续学习 ${stats.streakDays || 0} 天`;
+  document.getElementById('stat-total').textContent = cards.length;
+  document.getElementById('stat-mastered').textContent = masteredCount;
+  document.getElementById('stat-learning').textContent = learningCount;
+  const startBtn = document.getElementById('btn-start');
+  if (dueRecords.length === 0) {
+    startBtn.textContent = '今日已全部完成 🎉';
+    startBtn.disabled = true;
+    startBtn.style.opacity = '0.6';
+  } else {
+    startBtn.textContent = `开始今日背诵（${dueRecords.length}条）`;
+    startBtn.disabled = false;
+    startBtn.style.opacity = '1';
+  }
+  const recent = cards.slice(-5).reverse();
+  const html = recent.map(c => `
+    <div class="card-item">
+      <div><div class="q">${c.question}</div>
+      <div class="tags">${(c.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
+      <div class="a">${c.answer}</div>
+    </div>
+  `).join('');
+  document.getElementById('recent-cards').innerHTML = html || '<div class="empty"><div class="icon">📝</div><div class="text">暂无卡片，去题库添加吧</div></div>';
+}
+
+// 刷题逻辑
+// ========== 自定义刷题（按组学习） ==========
+let selectedGroup = 1;
+
+function showCustomStudyModal() {
+  document.getElementById('custom-study-modal').classList.add('show');
+  // 更新题库总数
+  DB.getCards().then(cards => {
+    document.getElementById('total-cards-count').textContent = cards.length;
+  });
+}
+
+function selectGroup(n, btn) {
+  selectedGroup = n;
+  document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function startCustomStudy() {
+  closeModal('custom-study-modal');
+  const count = selectedGroup * 10;
+  showToast(`正在抽取 ${count} 道题...`);
+
+  // 获取所有题目
+  const cards = await DB.getCards();
+  if (cards.length === 0) {
+    showToast('题库为空，请先添加题目');
+    return;
+  }
+
+  // 随机抽取
+  const shuffled = [...cards].sort(() => Math.random() - 0.5);
+  const selectedCards = shuffled.slice(0, Math.min(count, cards.length));
+
+  // 确保这些题目都有复习记录
+  if (useSupabase && supabaseClient && currentUser) {
+    const {data:existingRecords} = await supabaseClient.from('user_review')
+      .select('card_id')
+      .eq('user_id', currentUser.id);
+    const existingCardIds = new Set((existingRecords || []).map(r => r.card_id));
+    const today = getLocalDayStr();
+    const newRecords = selectedCards
+      .filter(c => !existingCardIds.has(c.id))
+      .map(c => ({
+        user_id: currentUser.id,
+        card_id: c.id,
+        repetition: 0,
+        is_need_retry_today: false,
+        next_review_date: today
+      }));
+    if (newRecords.length > 0) {
+      await supabaseClient.from('user_review').insert(newRecords);
+    }
+  }
+
+  // 获取复习记录，筛选出选中的题目
+  const records = await DB.getRecords();
+  const selectedCardIds = new Set(selectedCards.map(c => c.id));
+  const selectedRecords = records.filter(r => {
+    const cardId = r.card_id || r.cardId || (r.card && r.card.id);
+    return selectedCardIds.has(cardId);
+  });
+
+  if (selectedRecords.length === 0) {
+    showToast('没有可学习的题目');
+    return;
+  }
+
+  // 组成刷题队列
+  todayQueue = [...selectedRecords].sort(() => Math.random() - 0.5);
+  currentIndex = 0;
+  sessionReviewed = 0;
+  sessionMastered = 0;
+  switchPage('study');
+  renderStudyCard();
+  showToast(`开始学习 ${todayQueue.length} 道题`);
+}
+
+async function startStudy() {
+  const today = getLocalDayStr();
+  const records = await DB.getRecords();
+  // 排除已熟记的卡片，只显示今天到期的
+  const dueRecords = records.filter(r => {
+    const isMastered = r.is_mastered || r.isMastered || r.mastered || (r.repetition && r.repetition >= 99);
+    const isDue = (r.nextReviewDate || r.next_review_date) <= today;
+    return !isMastered && isDue;
+  });
+  if (dueRecords.length === 0) {
+    showToast('今日没有待复习的卡片');
+    return;
+  }
+  todayQueue = [...dueRecords].sort(() => Math.random() - 0.5);
+  currentIndex = 0;
+  sessionReviewed = 0;
+  sessionMastered = 0;
+  switchPage('study');
+  renderStudyCard();
+}
+
+function renderStudyCard() {
+  if (currentIndex >= todayQueue.length) {
+    showFinish();
+    return;
+  }
+  const item = todayQueue[currentIndex];
+  const card = item.card || {};
+  document.getElementById('card-tag').textContent = (card.tags && card.tags[0]) || '文学常识';
+  document.getElementById('card-question').textContent = card.question || '加载中...';
+  document.getElementById('card-answer').textContent = card.answer || '';
+  document.getElementById('card-hint').textContent = card.hint || '';
+  document.getElementById('progress-text').textContent = `${currentIndex + 1} / ${todayQueue.length}`;
+  document.getElementById('progress-fill').style.width = `${(currentIndex / todayQueue.length) * 100}%`;
+  document.getElementById('answer-area').style.display = 'none';
+  document.getElementById('btn-show-answer').style.display = 'block';
+  document.getElementById('rate-row').style.display = 'none';
+  const nextGood = calcSRS('good', item.repetition || 0);
+  const days = Math.round((new Date(nextGood.nextReviewDate) - new Date()) / 86400000);
+  document.getElementById('interval-good').textContent = days + '天后';
+}
+
+function showAnswer() {
+  document.getElementById('answer-area').style.display = 'block';
+  document.getElementById('btn-show-answer').style.display = 'none';
+  document.getElementById('rate-row').style.display = 'flex';
+}
+
+async function rateCard(grade) {
+  const item = todayQueue[currentIndex];
+  const result = calcSRS(grade, item.repetition || 0);
+  const isCloud = useSupabase && supabaseClient;
+  const updates = isCloud ? {
+    repetition: result.repetition,
+    is_need_retry_today: result.isNeedRetryToday,
+    next_review_date: result.nextReviewDate,
+    last_review_date: getLocalDayStr(),
+    total_reviews: (item.total_reviews || item.totalReviews || 0) + 1
+  } : {
+    repetition: result.repetition,
+    isNeedRetryToday: result.isNeedRetryToday,
+    nextReviewDate: result.nextReviewDate,
+    lastReviewDate: getLocalDayStr(),
+    totalReviews: (item.totalReviews || 0) + 1
+  };
+  if (result.repetition >= 4) {
+    if (isCloud) updates.mastered = true;
+    else updates.mastered = true;
+  }
+  await DB.updateRecord(item.id, updates);
+  todayQueue[currentIndex] = {...item, ...updates};
+  sessionReviewed++;
+  if (grade === 'good' && result.repetition >= 4) sessionMastered++;
+  if (result.isNeedRetryToday) {
+    todayQueue.push({...item, ...updates});
+    showToast('已加入今日重刷队列');
+  }
+  currentIndex++;
+  renderStudyCard();
+}
+
+// 标记为熟记（不再出现在刷题列表中）
+async function markAsMastered() {
+  const item = todayQueue[currentIndex];
+  if (!item) return;
+  const isCloud = useSupabase && supabaseClient;
+  const updates = isCloud ? {
+    is_mastered: true,
+    repetition: 99,
+    next_review_date: '2099-12-31',
+    last_review_date: getLocalDayStr()
+  } : {
+    isMastered: true,
+    mastered: true,
+    repetition: 99,
+    nextReviewDate: '2099-12-31',
+    lastReviewDate: getLocalDayStr()
+  };
+  await DB.updateRecord(item.id, updates);
+  sessionReviewed++;
+  sessionMastered++;
+  showToast('⭐ 已标记为熟记，不再出现');
+  currentIndex++;
+  renderStudyCard();
+}
+
+function showFinish() {
+  const today = getLocalDayStr();
+  DB.getStats().then(stats => {
+    if (stats.lastStudyDate !== today) {
+      const yesterday = addDaysStr(-1);
+      const newStreak = stats.lastStudyDate === yesterday ? (stats.streakDays || 0) + 1 : 1;
+      DB.updateStats({streakDays: newStreak, lastStudyDate: today, totalReviews: (stats.totalReviews || 0) + sessionReviewed});
+    }
+  });
+  document.getElementById('finish-reviewed').textContent = sessionReviewed;
+  document.getElementById('finish-mastered').textContent = sessionMastered;
+  switchPage('finish');
+}
+
+function goHome() {
+  renderHome();
+  switchPage('home');
+}
+
+// 题库管理
+async function renderLibrary() {
+  const cards = await DB.getCards();
+  document.getElementById('library-count').textContent = cards.length;
+  const html = cards.map(c => {
+    const isPublic = c.user_id === '00000000-0000-0000-0000-000000000000';
+    const isMine = !isPublic && (!currentUser || c.user_id === currentUser.id);
+    return `
+    <div class="card-item">
+      <div style="flex:1">
+        <div class="q">
+          ${c.question}
+          ${isPublic ? '<span style="background:#e3f2fd;color:#1976d2;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:6px">公共</span>' : ''}
+        </div>
+        <div class="tags">${(c.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="a">${c.answer}</div>
+      ${isPublic ? `<button onclick="copyPublicCard('${c.id}')" style="background:#4caf50;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;margin-left:8px">+ 我的题库</button>` : ''}
+    </div>
+  `}).join('');
+  document.getElementById('library-list').innerHTML = html || '<div class="empty"><div class="icon">📚</div><div class="text">题库为空，点击右上角添加</div></div>';
+}
+
+// 复制公共题目到我的题库
+async function copyPublicCard(cardId) {
+  if (!currentUser) { showToast('请先登录'); return; }
+  const cards = await DB.getCards();
+  const card = cards.find(c => c.id === cardId);
+  if (!card) { showToast('题目不存在'); return; }
+  // 检查是否已经复制过
+  const myCards = cards.filter(c => c.user_id === currentUser.id && c.question === card.question);
+  if (myCards.length > 0) { showToast('该题目已在你的题库中'); return; }
+  // 复制到我的题库
+  await DB.addCard({
+    question: card.question,
+    answer: card.answer,
+    hint: card.hint || '',
+    tags: card.tags || []
+  });
+  showToast('已添加到我的题库');
+  renderLibrary();
+}
+
+function showAddModal() { document.getElementById('add-modal').classList.add('show'); }
+function showImportModal() { document.getElementById('import-modal').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+async function addCard() {
+  const q = document.getElementById('new-question').value.trim();
+  const a = document.getElementById('new-answer').value.trim();
+  const h = document.getElementById('new-hint').value.trim();
+  const t = document.getElementById('new-tags').value.trim();
+  if (!q || !a) { showToast('题目和答案不能为空'); return; }
+  const tags = t ? t.split(/[,，]/).map(s=>s.trim()).filter(Boolean) : [];
+  await DB.addCard({question:q, answer:a, hint:h, tags});
+  document.getElementById('new-question').value = '';
+  document.getElementById('new-answer').value = '';
+  document.getElementById('new-hint').value = '';
+  document.getElementById('new-tags').value = '';
+  closeModal('add-modal');
+  showToast('添加成功');
+  renderLibrary();
+}
+
+async function importCards() {
+  const text = document.getElementById('import-text').value.trim();
+  if (!text) { showToast('请输入要导入的内容'); return; }
+  const lines = text.split('\n').filter(l => l.trim());
+  let count = 0;
+  for (const line of lines) {
+    const parts = line.split('|').map(s => s.trim());
+    if (parts.length >= 2 && parts[0] && parts[1]) {
+      const tags = parts[3] ? parts[3].split(/[,，]/).map(s=>s.trim()).filter(Boolean) : [];
+      await DB.addCard({question: parts[0], answer: parts[1], hint: parts[2] || '', tags});
+      count++;
+    }
+  }
+  document.getElementById('import-text').value = '';
+  closeModal('import-modal');
+  showToast(`成功导入 ${count} 条卡片`);
+  renderLibrary();
+}
+
+// 统计页
+async function renderStats() {
+  const records = await DB.getRecords();
+  const stats = await DB.getStats();
+  const today = getLocalDayStr();
+  const totalReviews = records.reduce((s,r) => s + (r.total_reviews || r.totalReviews || 0), 0) + (stats.totalReviews || 0);
+  const mastered = records.filter(r => r.mastered || r.repetition >= 4).length;
+  const due = records.filter(r => (r.nextReviewDate || r.next_review_date) <= today).length;
+  const accuracy = records.length > 0 ? Math.round(mastered / records.length * 100) : 0;
+  document.getElementById('stats-total-reviews').textContent = totalReviews;
+  document.getElementById('stats-accuracy').textContent = accuracy + '%';
+  document.getElementById('stats-streak').textContent = stats.streakDays || 0;
+  document.getElementById('stats-due').textContent = due;
+  const tagStats = {};
+  for (const r of records) {
+    const card = r.card || {};
+    for (const tag of (card.tags || ['未分类'])) {
+      if (!tagStats[tag]) tagStats[tag] = {total:0, mastered:0};
+      tagStats[tag].total++;
+      if (r.mastered || r.repetition >= 4) tagStats[tag].mastered++;
+    }
+  }
+  const html = Object.entries(tagStats).map(([tag, s]) => {
+    const pct = Math.round(s.mastered / s.total * 100);
+    return `
+      <div class="card-item">
+        <div style="flex:1">
+          <div class="q">${tag}</div>
+          <div style="font-size:11px;color:#888;margin-top:4px">${s.mastered}/${s.total} 已掌握</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:18px;font-weight:700;color:var(--primary)">${pct}%</div>
+          <div style="width:60px;height:4px;background:#eee;border-radius:2px;margin-top:4px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:var(--primary);border-radius:2px"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('mastery-list').innerHTML = html || '<div class="empty"><div class="text">暂无数据</div></div>';
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// 启动
+function initApp() {
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => {
+      if (e.target === m) m.classList.remove('show');
+    });
+  });
+  
+  if (!useSupabase) {
+    // 未配置Supabase，直接使用本地模式
+    useLocalMode();
+  } else {
+    // 等待Supabase SDK加载完成
+    waitForSupabase(() => {
+      if (supabaseClient) {
+        checkAuth();
+      } else {
+        useLocalMode();
+      }
+    });
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
+</script>
+</body>
+</html>
