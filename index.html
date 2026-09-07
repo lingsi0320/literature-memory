@@ -78,6 +78,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .rate-forget{background:linear-gradient(135deg,var(--forget),#ee5a5a)}
 .rate-hard{background:linear-gradient(135deg,var(--hard),#fb8c00)}
 .rate-good{background:linear-gradient(135deg,var(--good),#00acc1)}
+/* 语音控制栏 */
+.speech-bar{display:flex;align-items:center;gap:10px;margin:12px 0;padding:10px 14px;background:#f8f9fa;border-radius:12px}
+.speech-btn{width:40px;height:40px;border:none;border-radius:50%;background:var(--primary);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.speech-btn:active{transform:scale(.95)}
+.speech-btn:disabled{background:#ccc;cursor:not-allowed}
+.speech-btn.stop{background:#ef5350}
+.speech-info{flex:1;font-size:12px;color:#666}
+.speech-info .status{font-weight:600;color:var(--primary)}
+.speech-speed{display:flex;align-items:center;gap:6px;font-size:11px;color:#666}
+.speech-speed input{width:60px}
+.auto-play-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:#666;cursor:pointer}
+.auto-play-toggle input{cursor:pointer}
 .finish-page{text-align:center;padding-top:80px}
 .finish-icon{font-size:72px;margin-bottom:20px}
 .finish-title{font-size:24px;font-weight:700;margin-bottom:8px}
@@ -209,6 +221,80 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     </div>
   </div>
 
+  <!-- 随身听页面 -->
+  <div id="page-listen" class="page">
+    <div class="topbar">
+      <h1>🎧 随身听</h1>
+      <div class="user-info" id="listen-progress" style="font-size:13px">未开始</div>
+    </div>
+    
+    <!-- 未开始状态：选择组数 -->
+    <div id="listen-setup" style="padding:20px">
+      <div style="text-align:center;margin:30px 0">
+        <div style="font-size:64px;margin-bottom:16px">🎧</div>
+        <div style="font-size:18px;font-weight:600;margin-bottom:8px">文学常识随身听</div>
+        <div style="font-size:13px;color:#999;line-height:1.6">闭眼听题，磨耳朵记忆<br>每组10题，可自动连播</div>
+      </div>
+      
+      <div class="section-title">选择今日听题量</div>
+      <div class="group-select" id="listen-group-select">
+        <button class="group-btn active" onclick="selectListenGroup(1,this)"><span class="num">1</span><span class="label">组 / 10题</span></button>
+        <button class="group-btn" onclick="selectListenGroup(2,this)"><span class="num">2</span><span class="label">组 / 20题</span></button>
+        <button class="group-btn" onclick="selectListenGroup(3,this)"><span class="num">3</span><span class="label">组 / 30题</span></button>
+        <button class="group-btn" onclick="selectListenGroup(5,this)"><span class="num">5</span><span class="label">组 / 50题</span></button>
+      </div>
+      
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 0;padding:14px;background:#f8f9fa;border-radius:12px">
+        <label class="auto-play-toggle" style="font-size:14px">
+          <input type="checkbox" id="listen-auto-play" checked>
+          自动连播下一题
+        </label>
+        <div class="speech-speed">
+          <span>语速</span>
+          <input type="range" id="listen-rate" min="0.5" max="2" step="0.1" value="1">
+        </div>
+      </div>
+      
+      <div style="text-align:center;font-size:12px;color:#999;margin-bottom:16px">
+        题库总数：<span id="listen-total-count">0</span> 题
+      </div>
+      
+      <button class="btn btn-primary" style="width:100%" onclick="startListen()">开始听题 🎧</button>
+    </div>
+    
+    <!-- 播放状态 -->
+    <div id="listen-player" style="display:none;padding:20px">
+      <div class="flashcard" style="min-height:280px;display:flex;flex-direction:column;justify-content:center">
+        <span class="card-tag" id="listen-card-tag">文学常识</span>
+        <div class="question" id="listen-question" style="font-size:20px;line-height:1.6;margin:16px 0">题目加载中...</div>
+        <div class="answer-area" id="listen-answer-area" style="display:block">
+          <div class="answer" id="listen-answer" style="font-size:18px;color:var(--primary)"></div>
+          <div class="hint" id="listen-hint"></div>
+        </div>
+      </div>
+      
+      <!-- 播放控制栏 -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:24px;margin:30px 0">
+        <button onclick="prevListenCard()" style="width:50px;height:50px;border:none;border-radius:50%;background:#f0f0f0;font-size:20px;cursor:pointer">⏮</button>
+        <button id="listen-play-btn" onclick="toggleListenPlay()" style="width:70px;height:70px;border:none;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 20px rgba(102,126,234,.4)">▶</button>
+        <button onclick="nextListenCard()" style="width:50px;height:50px;border:none;border-radius:50%;background:#f0f0f0;font-size:20px;cursor:pointer">⏭</button>
+      </div>
+      
+      <!-- 进度和状态 -->
+      <div style="text-align:center">
+        <div id="listen-status" style="font-size:14px;color:var(--primary);font-weight:600;margin-bottom:8px">就绪</div>
+        <div style="font-size:12px;color:#999">
+          <span id="listen-current-index">1</span> / <span id="listen-total">0</span>
+        </div>
+        <div style="width:100%;height:4px;background:#eee;border-radius:2px;margin-top:12px;overflow:hidden">
+          <div id="listen-progress-bar" style="width:0%;height:100%;background:var(--primary);border-radius:2px;transition:width .3s"></div>
+        </div>
+      </div>
+      
+      <button class="btn btn-outline" style="width:100%;margin-top:30px" onclick="exitListen()">退出随身听</button>
+    </div>
+  </div>
+
   <!-- 题库管理页 -->
   <div id="page-library" class="page">
     <div class="topbar">
@@ -242,6 +328,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
   <div class="tabbar" id="tabbar" style="display:none">
     <div class="tab-item active" data-tab="home" onclick="switchTab('home')"><div class="icon">🏠</div><div>首页</div></div>
     <div class="tab-item" data-tab="study" onclick="switchTab('study')"><div class="icon">📖</div><div>背诵</div></div>
+    <div class="tab-item" data-tab="listen" onclick="switchTab('listen')"><div class="icon">🎧</div><div>随身听</div></div>
     <div class="tab-item" data-tab="library" onclick="switchTab('library')"><div class="icon">📚</div><div>题库</div></div>
     <div class="tab-item" data-tab="stats" onclick="switchTab('stats')"><div class="icon">📊</div><div>统计</div></div>
   </div>
@@ -511,10 +598,14 @@ let toastTimer = null;
 
 // 页面切换
 function switchPage(name) {
+  // 离开刷题页面时停止语音
+  if (name !== 'study') {
+    stopSpeech();
+  }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-  const tabMap = {home:'home', study:'study', finish:'home', library:'library', stats:'stats'};
+  const tabMap = {home:'home', study:'study', finish:'home', library:'library', stats:'stats', listen:'listen'};
   const activeTab = tabMap[name];
   if (activeTab) {
     document.querySelector(`.tab-item[data-tab="${activeTab}"]`)?.classList.add('active');
@@ -524,6 +615,7 @@ function switchPage(name) {
 function switchTab(tab) {
   if (tab === 'home') { renderHome(); switchPage('home'); }
   else if (tab === 'study') { startStudy(); }
+  else if (tab === 'listen') { initListenPage(); switchPage('listen'); }
   else if (tab === 'library') { renderLibrary(); switchPage('library'); }
   else if (tab === 'stats') { renderStats(); switchPage('stats'); }
 }
@@ -632,8 +724,12 @@ async function renderHome() {
   const records = await DB.getRecords();
   const cards = await DB.getCards();
   const stats = await DB.getStats();
-  const dueRecords = records.filter(r => (r.nextReviewDate || r.next_review_date) <= today);
-  const masteredCount = records.filter(r => r.mastered || r.repetition >= 4).length;
+  const dueRecords = records.filter(r => {
+    const isMastered = r.is_mastered || r.isMastered || r.mastered || (r.repetition && r.repetition >= 99);
+    const isDue = (r.nextReviewDate || r.next_review_date) <= today;
+    return !isMastered && isDue;
+  });
+  const masteredCount = records.filter(r => r.is_mastered || r.isMastered || r.mastered || r.repetition >= 4 || r.repetition >= 99).length;
   const learningCount = records.filter(r => !r.mastered && r.repetition > 0 && r.repetition < 4).length;
   document.getElementById('today-date').textContent = formatDateCN(today);
   document.getElementById('today-count').textContent = dueRecords.length;
@@ -717,12 +813,13 @@ async function startCustomStudy() {
     }
   }
 
-  // 获取复习记录，筛选出选中的题目
+  // 获取复习记录，筛选出选中的题目（排除已熟记的）
   const records = await DB.getRecords();
   const selectedCardIds = new Set(selectedCards.map(c => c.id));
   const selectedRecords = records.filter(r => {
     const cardId = r.card_id || r.cardId || (r.card && r.card.id);
-    return selectedCardIds.has(cardId);
+    const isMastered = r.is_mastered || r.isMastered || r.mastered || (r.repetition && r.repetition >= 99);
+    return selectedCardIds.has(cardId) && !isMastered;
   });
 
   if (selectedRecords.length === 0) {
@@ -762,6 +859,9 @@ async function startStudy() {
 }
 
 function renderStudyCard() {
+  // 停止上一题的语音
+  stopSpeech();
+  
   if (currentIndex >= todayQueue.length) {
     showFinish();
     return;
@@ -786,6 +886,408 @@ function showAnswer() {
   document.getElementById('answer-area').style.display = 'block';
   document.getElementById('btn-show-answer').style.display = 'none';
   document.getElementById('rate-row').style.display = 'flex';
+}
+
+// ========== 语音朗读（随身听功能） ==========
+let speechPlaying = false;
+let speechPaused = false;
+let autoPlayEnabled = false;
+let speechRate = 1;
+let currentUtterance = null;
+
+// 检查浏览器是否支持语音合成
+function isSpeechSupported() {
+  return 'speechSynthesis' in window;
+}
+
+// 朗读文本
+function speakText(text, onEnd) {
+  if (!isSpeechSupported()) {
+    showToast('您的浏览器不支持语音朗读');
+    return;
+  }
+  stopSpeech();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'zh-CN';
+  utterance.rate = speechRate;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+  
+  // 优先选择中文语音
+  const voices = window.speechSynthesis.getVoices();
+  const chineseVoice = voices.find(v => v.lang.startsWith('zh') || v.lang === 'cmn');
+  if (chineseVoice) utterance.voice = chineseVoice;
+  
+  utterance.onstart = () => {
+    speechPlaying = true;
+    speechPaused = false;
+    updateSpeechUI();
+  };
+  utterance.onend = () => {
+    speechPlaying = false;
+    speechPaused = false;
+    updateSpeechUI();
+    if (onEnd) onEnd();
+  };
+  utterance.onerror = () => {
+    speechPlaying = false;
+    speechPaused = false;
+    updateSpeechUI();
+  };
+  
+  currentUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+// 朗读当前卡片（题目 + 停顿 + 答案）
+function playCurrentCard() {
+  const item = todayQueue[currentIndex];
+  if (!item) return;
+  const card = item.card || {};
+  const question = card.question || '';
+  const answer = card.answer || '';
+  const hint = card.hint || '';
+  
+  if (!question && !answer) {
+    showToast('没有可朗读的内容');
+    return;
+  }
+  
+  document.getElementById('speech-text').textContent = question.substring(0, 30) + '...';
+  
+  // 先读题目，停顿2秒，再读答案
+  const fullText = question + '。。。' + (hint ? '提示：' + hint + '。。。' : '') + '答案是：' + answer;
+  
+  speakText(fullText, () => {
+    // 朗读完成后，如果开启了自动播放，延迟2秒自动下一题
+    if (autoPlayEnabled && currentIndex < todayQueue.length - 1) {
+      setTimeout(() => {
+        // 自动标记为"模糊"然后下一题（模拟随身听模式）
+        // 或者只是自动显示下一题
+        currentIndex++;
+        renderStudyCard();
+      }, 2000);
+    }
+  });
+}
+
+// 播放/暂停切换
+function toggleSpeech() {
+  if (!isSpeechSupported()) {
+    showToast('您的浏览器不支持语音朗读');
+    return;
+  }
+  if (speechPlaying && !speechPaused) {
+    // 暂停
+    window.speechSynthesis.pause();
+    speechPaused = true;
+    updateSpeechUI();
+  } else if (speechPaused) {
+    // 继续
+    window.speechSynthesis.resume();
+    speechPaused = false;
+    updateSpeechUI();
+  } else {
+    // 开始播放
+    playCurrentCard();
+  }
+}
+
+// 停止语音
+function stopSpeech() {
+  if (isSpeechSupported()) {
+    window.speechSynthesis.cancel();
+  }
+  speechPlaying = false;
+  speechPaused = false;
+  updateSpeechUI();
+}
+
+// 切换自动播放
+function toggleAutoPlay() {
+  autoPlayEnabled = document.getElementById('auto-play').checked;
+  if (autoPlayEnabled) {
+    showToast('已开启自动播放，读完一题后自动下一题');
+  } else {
+    showToast('已关闭自动播放');
+  }
+}
+
+// 更新语速
+function updateSpeechRate() {
+  speechRate = parseFloat(document.getElementById('speech-rate').value);
+  // 如果正在播放，重新播放以应用新语速
+  if (speechPlaying) {
+    playCurrentCard();
+  }
+}
+
+// 更新语音UI状态
+function updateSpeechUI() {
+  const playBtn = document.getElementById('btn-speech-play');
+  const statusEl = document.getElementById('speech-status');
+  if (playBtn && statusEl) {
+    if (speechPlaying && !speechPaused) {
+      playBtn.textContent = '⏸';
+      statusEl.textContent = '朗读中...';
+      statusEl.style.color = 'var(--primary)';
+    } else if (speechPaused) {
+      playBtn.textContent = '▶';
+      statusEl.textContent = '已暂停';
+      statusEl.style.color = '#ff9800';
+    } else {
+      playBtn.textContent = '▶';
+      statusEl.textContent = '就绪';
+      statusEl.style.color = '#666';
+    }
+  }
+}
+
+// 预加载语音列表（解决Chrome首次调用语音为空的问题）
+if (isSpeechSupported()) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+  };
+}
+
+// ========== 随身听功能（独立页面） ==========
+let listenQueue = [];
+let listenIndex = 0;
+let listenPlaying = false;
+let listenPaused = false;
+let selectedListenGroup = 1;
+let listenUtterance = null;
+
+// 初始化随身听页面
+async function initListenPage() {
+  stopListenSpeech();
+  document.getElementById('listen-setup').style.display = 'block';
+  document.getElementById('listen-player').style.display = 'none';
+  document.getElementById('listen-progress').textContent = '未开始';
+  const cards = await DB.getCards();
+  document.getElementById('listen-total-count').textContent = cards.length;
+}
+
+// 选择组数
+function selectListenGroup(n, btn) {
+  selectedListenGroup = n;
+  document.querySelectorAll('#listen-group-select .group-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// 开始听题
+async function startListen() {
+  const count = selectedListenGroup * 10;
+  const cards = await DB.getCards();
+  if (cards.length === 0) {
+    showToast('题库为空，请先添加题目');
+    return;
+  }
+  
+  // 随机抽取
+  const shuffled = [...cards].sort(() => Math.random() - 0.5);
+  listenQueue = shuffled.slice(0, Math.min(count, cards.length));
+  listenIndex = 0;
+  
+  // 切换到播放界面
+  document.getElementById('listen-setup').style.display = 'none';
+  document.getElementById('listen-player').style.display = 'block';
+  document.getElementById('listen-total').textContent = listenQueue.length;
+  
+  renderListenCard();
+  
+  // 自动开始播放
+  setTimeout(() => {
+    if (document.getElementById('listen-auto-play').checked) {
+      toggleListenPlay();
+    }
+  }, 500);
+}
+
+// 渲染当前题目
+function renderListenCard() {
+  if (listenIndex >= listenQueue.length) {
+    showToast('🎉 全部听完了！');
+    exitListen();
+    return;
+  }
+  const card = listenQueue[listenIndex];
+  document.getElementById('listen-card-tag').textContent = (card.tags && card.tags[0]) || '文学常识';
+  document.getElementById('listen-question').textContent = card.question || '';
+  document.getElementById('listen-answer').textContent = card.answer || '';
+  document.getElementById('listen-hint').textContent = card.hint || '';
+  document.getElementById('listen-current-index').textContent = listenIndex + 1;
+  document.getElementById('listen-progress').textContent = `${listenIndex + 1}/${listenQueue.length}`;
+  document.getElementById('listen-progress-bar').style.width = `${((listenIndex + 1) / listenQueue.length) * 100}%`;
+}
+
+// 播放/暂停切换
+function toggleListenPlay() {
+  if (!isSpeechSupported()) {
+    showToast('您的浏览器不支持语音朗读');
+    return;
+  }
+  if (listenPlaying && !listenPaused) {
+    // 暂停
+    window.speechSynthesis.pause();
+    listenPaused = true;
+    updateListenUI();
+  } else if (listenPaused) {
+    // 继续
+    window.speechSynthesis.resume();
+    listenPaused = false;
+    updateListenUI();
+  } else {
+    // 开始播放当前题
+    playListenCurrent();
+  }
+}
+
+// 构建随身听朗读文本（知识点陈述句，非问答形式）
+function buildListenText(card) {
+  const question = (card.question || '').trim();
+  const answer = (card.answer || '').trim();
+  const hint = (card.hint || '').trim();
+  
+  // 如果答案足够长，直接读答案（答案本身就是完整的知识点陈述）
+  if (answer.length >= 10) {
+    let text = answer;
+    if (hint) text += '。' + hint;
+    return text;
+  }
+  
+  // 答案较短，把问句转换成陈述句
+  let q = question;
+  // 去掉末尾的问号
+  q = q.replace(/[？?\s]+$/, '');
+  // 去掉常见的疑问词结尾，转换成"是"
+  q = q.replace(/(是谁|是什么|有哪些|分别是|叫什么|为什么|怎么样|如何|哪国人|哪个国家)$/, '');
+  // 拼接成陈述句
+  let text = q + '是' + answer;
+  if (hint) text += '。' + hint;
+  return text;
+}
+
+// 播放当前题目
+function playListenCurrent() {
+  if (listenIndex >= listenQueue.length) return;
+  const card = listenQueue[listenIndex];
+  
+  // 构建知识点陈述句
+  const fullText = buildListenText(card);
+  
+  if (!fullText || fullText.length < 2) {
+    nextListenCard();
+    return;
+  }
+  
+  stopListenSpeech();
+  
+  const utterance = new SpeechSynthesisUtterance(fullText);
+  utterance.lang = 'zh-CN';
+  utterance.rate = parseFloat(document.getElementById('listen-rate').value) || 1;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+  
+  const voices = window.speechSynthesis.getVoices();
+  const chineseVoice = voices.find(v => v.lang.startsWith('zh') || v.lang === 'cmn');
+  if (chineseVoice) utterance.voice = chineseVoice;
+  
+  utterance.onstart = () => {
+    listenPlaying = true;
+    listenPaused = false;
+    updateListenUI();
+  };
+  utterance.onend = () => {
+    listenPlaying = false;
+    listenPaused = false;
+    updateListenUI();
+    // 如果开启了自动连播，延迟1.5秒自动下一题
+    if (document.getElementById('listen-auto-play').checked && listenIndex < listenQueue.length - 1) {
+      setTimeout(() => {
+        if (document.getElementById('listen-auto-play').checked) {
+          nextListenCard();
+        }
+      }, 1500);
+    }
+  };
+  utterance.onerror = () => {
+    listenPlaying = false;
+    listenPaused = false;
+    updateListenUI();
+  };
+  
+  listenUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+// 上一题
+function prevListenCard() {
+  stopListenSpeech();
+  if (listenIndex > 0) {
+    listenIndex--;
+    renderListenCard();
+    if (document.getElementById('listen-auto-play').checked) {
+      setTimeout(() => playListenCurrent(), 300);
+    }
+  } else {
+    showToast('已经是第一题了');
+  }
+}
+
+// 下一题
+function nextListenCard() {
+  stopListenSpeech();
+  if (listenIndex < listenQueue.length - 1) {
+    listenIndex++;
+    renderListenCard();
+    if (document.getElementById('listen-auto-play').checked) {
+      setTimeout(() => playListenCurrent(), 300);
+    }
+  } else {
+    showToast('🎉 全部听完了！');
+    exitListen();
+  }
+}
+
+// 停止随身听语音
+function stopListenSpeech() {
+  if (isSpeechSupported()) {
+    window.speechSynthesis.cancel();
+  }
+  listenPlaying = false;
+  listenPaused = false;
+  updateListenUI();
+}
+
+// 更新随身听UI
+function updateListenUI() {
+  const playBtn = document.getElementById('listen-play-btn');
+  const statusEl = document.getElementById('listen-status');
+  if (playBtn && statusEl) {
+    if (listenPlaying && !listenPaused) {
+      playBtn.textContent = '⏸';
+      statusEl.textContent = '正在朗读...';
+      statusEl.style.color = 'var(--primary)';
+    } else if (listenPaused) {
+      playBtn.textContent = '▶';
+      statusEl.textContent = '已暂停';
+      statusEl.style.color = '#ff9800';
+    } else {
+      playBtn.textContent = '▶';
+      statusEl.textContent = '就绪';
+      statusEl.style.color = '#666';
+    }
+  }
+}
+
+// 退出随身听
+function exitListen() {
+  stopListenSpeech();
+  listenQueue = [];
+  listenIndex = 0;
+  switchTab('home');
 }
 
 async function rateCard(grade) {
@@ -847,6 +1349,7 @@ async function markAsMastered() {
 }
 
 function showFinish() {
+  stopSpeech();
   const today = getLocalDayStr();
   DB.getStats().then(stats => {
     if (stats.lastStudyDate !== today) {
@@ -861,6 +1364,7 @@ function showFinish() {
 }
 
 function goHome() {
+  stopSpeech();
   renderHome();
   switchPage('home');
 }
